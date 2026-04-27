@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+build/
+dist/
+out/
+*.o
+*.elf
+*.hex
+*.bin
+
+# nRF / Zephyr
+.west/
+build/
+zephyr/
+*.map
+
+# Mobile
+.expo/
+ios/build/
+android/build/
+android/.gradle/
+*.keystore
+!debug.keystore
+
+# Environment
+.env
+.env.local
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
