@@ -1,68 +1,69 @@
 # TetherApp — Xcode Setup Guide
 
-## 1. Create the Xcode Project
+## Prerequisites
 
-1. Open Xcode → File → New → Project
-2. Choose **App** (iOS), click Next
-3. Product Name: `TetherApp`
-4. Bundle Identifier: `com.tether.app`
-5. Interface: **SwiftUI**
-6. Language: **Swift**
-7. Save into the `mobile/` directory
+- Xcode 15+
+- [xcodegen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`)
+- Physical iOS device (Family Controls doesn't work on Simulator)
 
-## 2. Add Source Files
+## Setup
 
-Drag the following folders into the Xcode project navigator (check "Copy items if needed"):
-- `TetherApp/App/`
-- `TetherApp/Models/`
-- `TetherApp/Views/`
-- `TetherApp/Shared/`
+```bash
+cd mobile
+xcodegen generate
+open TetherApp.xcodeproj
+```
 
-Delete the auto-generated `ContentView.swift` and `TetherAppApp.swift` (our `TetherApp.swift` replaces both).
+This generates the full Xcode project from `project.yml` with both targets, entitlements, and build settings pre-configured.
 
-## 3. Add the DeviceActivity Monitor Extension
+## After Opening in Xcode
 
-1. File → New → Target → **DeviceActivity Monitor Extension**
-2. Product Name: `TetherActivityMonitor`
-3. Bundle Identifier: `com.tether.app.activity-monitor`
-4. Add `TetherActivityMonitor/TetherMonitor.swift` to this target
-5. Add `TetherApp/Shared/Constants.swift` to **both** targets
+1. Select the **TetherApp** target → Signing & Capabilities → set your **Team**
+2. Select the **TetherActivityMonitor** target → do the same
+3. Select your physical iOS device as the run destination
+4. Build & Run
 
-## 4. Capabilities
+## What's Pre-Configured
 
-### Main App Target (`TetherApp`)
-- **Family Controls** (requires approved entitlement)
-- **App Groups** → add `group.com.tether.app`
-- **Background Modes** → check "Uses Bluetooth LE accessories"
+The `project.yml` handles all of this automatically:
 
-### Extension Target (`TetherActivityMonitor`)
-- **Family Controls**
-- **App Groups** → add `group.com.tether.app`
+| Setting | Value |
+|---|---|
+| Bundle ID (app) | `com.tether.app` |
+| Bundle ID (extension) | `com.tether.app.activity-monitor` |
+| iOS Deployment Target | 16.0 |
+| Family Controls entitlement | Both targets |
+| App Groups | `group.com.tether.app` (both targets) |
+| Background Modes | Bluetooth LE |
+| Bluetooth usage description | Set in Info.plist |
 
-## 5. Build & Run
+## Notes
 
-- Must use a **physical iOS device** (Family Controls doesn't work on Simulator)
-- If the Family Controls entitlement isn't approved yet, the app will still build — the `#if canImport(FamilyControls)` guards provide stub fallbacks
-- Debug buttons on the Home screen let you test BLE commands without DeviceActivity
+- If the Family Controls entitlement isn't approved yet, the app still builds — `#if canImport(FamilyControls)` guards provide stub fallbacks
+- Debug buttons on the Home screen let you test BLE commands (Warn/Zap/Off) without DeviceActivity
+- After changing `project.yml`, close Xcode and re-run `xcodegen generate`
 
 ## File Structure
 
 ```
 mobile/
+├── project.yml                        # xcodegen project definition
 ├── SETUP.md
+├── Shared/
+│   └── Constants.swift                # BLE UUIDs, command bytes, shared keys (both targets)
 ├── TetherApp/
+│   ├── TetherApp.entitlements
 │   ├── App/
-│   │   └── TetherApp.swift           # @main entry point
+│   │   └── TetherApp.swift            # @main entry point
 │   ├── Models/
-│   │   ├── AppRule.swift              # Data model + persistence
+│   │   ├── AppRule.swift              # Data model + App Group persistence
 │   │   ├── BLEManager.swift           # CoreBluetooth central manager
 │   │   └── ActivityScheduler.swift    # DeviceActivity registration
-│   ├── Views/
-│   │   ├── HomeView.swift             # Main screen: status + rules list
-│   │   ├── AppPickerView.swift        # FamilyActivityPicker (or manual fallback)
-│   │   └── RuleEditView.swift         # Threshold sliders
-│   └── Shared/
-│       └── Constants.swift            # UUIDs, keys, command bytes (shared with extension)
+│   └── Views/
+│       ├── HomeView.swift             # Main screen: BLE status + rules list
+│       ├── AppPickerView.swift        # FamilyActivityPicker (or manual fallback)
+│       └── RuleEditView.swift         # Threshold sliders
 └── TetherActivityMonitor/
+    ├── TetherActivityMonitor.entitlements
     └── TetherMonitor.swift            # DeviceActivityMonitor subclass
 ```

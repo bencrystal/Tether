@@ -1,0 +1,41 @@
+name: TetherApp
+options:
+  bundleIdPrefix: com.tether
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  TetherApp:
+    type: application
+    platform: iOS
+    sources:
+      - TetherApp
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.tether.app
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: 1
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: TetherApp/Info.plist
+        CODE_SIGN_ENTITLEMENTS: TetherApp/TetherApp.entitlements
+    dependencies:
+      - target: TetherActivityMonitor
+
+  TetherActivityMonitor:
+    type: app-extension
+    platform: iOS
+    sources:
+      - TetherActivityMonitor
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.tether.app.activity-monitor
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: 1
+        SWIFT_VERSION: "5.9"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: TetherActivityMonitor/Info.plist
+        CODE_SIGN_ENTITLEMENTS: TetherActivityMonitor/TetherActivityMonitor.entitlements

@@ -1,15 +1,17 @@
 import Foundation
-#if canImport(DeviceActivity) && canImport(FamilyControls)
+
+#if os(iOS) && canImport(DeviceActivity) && canImport(ManagedSettings)
 import DeviceActivity
 import FamilyControls
+import ManagedSettings
 
 /// Registers DeviceActivity monitoring schedules for each app rule.
 /// Call `scheduleAll()` after rules change.
+@available(iOS 16.0, *)
 class ActivityScheduler {
 
     private let center = DeviceActivityCenter()
 
-    /// Daily schedule: midnight to 11:59 PM, repeating
     private let dailySchedule = DeviceActivitySchedule(
         intervalStart: DateComponents(hour: 0, minute: 0),
         intervalEnd: DateComponents(hour: 23, minute: 59),
@@ -17,7 +19,6 @@ class ActivityScheduler {
     )
 
     func scheduleAll(rules: [AppRule]) {
-        // Stop all existing monitoring first
         center.stopMonitoring()
 
         for rule in rules {
@@ -59,7 +60,6 @@ class ActivityScheduler {
 
 #else
 
-/// Stub when DeviceActivity is unavailable
 class ActivityScheduler {
     func scheduleAll(rules: [AppRule]) {
         print("[Schedule] DeviceActivity not available — skipping")

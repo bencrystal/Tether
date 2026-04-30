@@ -16,7 +16,7 @@
 #include <bluefruit.h>
 
 // ── BLE UUIDs ────────────────────────────────────────
-#define TETHER_SERVICE_UUID   "12345678-1234-1234-1234-123456789ABC"
+#define TETHER_SERVICE_UUID   "12345678-1234-1234-1234-123456789ABC" 
 #define COMMAND_CHAR_UUID     "12345678-1234-1234-1234-123456789ABD"
 
 // ── LED ──────────────────────────────────────────────
